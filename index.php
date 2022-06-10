@@ -173,7 +173,7 @@
       </div>
     </div>
   </section>
-  <section>
+  <section id="askld">
     <div class="container">
       <div class="col-12">
         <div class="col-12 text-center mt-5 mx-auto">
@@ -205,7 +205,7 @@
                   <p>3 Properties per Project</p>
                 </div>
                 <div class="my-md-3 bbc1">
-                  <p>3 Agents</p>
+                  <p>1 Agent</p>
                 </div>
                 <button class="btn yoot my-5 my-md-3 px-md-3 hz" type="button " data-bs-toggle="modal"
                   data-bs-target="#exampleModalll">
@@ -228,7 +228,7 @@
                   <p>Unlimited Projects</p>
                 </div>
                 <div class="my-md-3 bbc1">
-                  <p>Unlimited Properties in each Project</p>
+                  <p>Unlimited Properties</p>
                 </div>
                 <div class="my-md-3 bbc1">
                   <p>Unlimited Agents</p>

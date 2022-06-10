@@ -134,6 +134,7 @@ if(isset($_POST['loginemail'])){
           $emailfromdatabase = $row['email1'];
           $passwordfromdatabase = $row['pass1'];
           $varified = $row['verified'];
+          $membership = $row['membership'];
         //   echo "<script>alert('".$passwordfromdatabase."')</script>";          
           if($email1 == $emailfromdatabase and $loginpassword == $passwordfromdatabase){
               if($varified == "yes"){
@@ -141,6 +142,7 @@ if(isset($_POST['loginemail'])){
                 $_SESSION['email1'] = $emailfromdatabase;
                 $_SESSION['full_name'] = $row['full_name'];
                 $_SESSION['employee_username'] = $emailfromdatabase;
+                $_SESSION['membership'] = $membership;
                 echo "<script>window.location.replace('index.php');</script>";
               }
               else{

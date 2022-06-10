@@ -186,7 +186,7 @@ if(isset($_POST['demo_request'])){
   $call = "CALL ".$seleced_db.".demo_connection('$fullname','$email1','$phone1','$city1')";
   if ($conn1->query($call) === TRUE) {
     try{
-      $mail->setFrom('info@mexil.it', 'test account');
+      $mail->setFrom('asif@mexil.it', 'test account');
       $mail->addAddress($email1);     //Add a recipient
       $mail->isHTML(true);           //Set email format to HTML
       $mail->Subject = 'Demo Request For AraaziPak';

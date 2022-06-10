@@ -46,7 +46,7 @@ function create_new_user($mail,$fullname,$pass1,$cnumber, $email1, $seleced_db, 
     if ($conn1->query($call) === TRUE) {
         // echo "<script>console.log('asdfasdf')</script>";
         try{
-            $mail->setFrom('info@mexil.it', 'test account');
+            $mail->setFrom('asif@mexil.it', 'test account');
             $mail->addAddress($email1);     //Add a recipient
             $mail->isHTML(true);           //Set email format to HTML
             $mail->Subject = 'Email Verification';

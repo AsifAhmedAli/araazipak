@@ -134,6 +134,7 @@ if(isset($_POST['loginemail'])){
           $emailfromdatabase = $row['email1'];
           $passwordfromdatabase = $row['pass1'];
           $varified = $row['verified'];
+          $membership = $row['membership'];
         //   echo "<script>alert('".$passwordfromdatabase."')</script>";          
           if($email1 == $emailfromdatabase and $loginpassword == $passwordfromdatabase){
               if($varified == "yes"){
@@ -141,6 +142,7 @@ if(isset($_POST['loginemail'])){
                 $_SESSION['email1'] = $emailfromdatabase;
                 $_SESSION['full_name'] = $row['full_name'];
                 $_SESSION['employee_username'] = $emailfromdatabase;
+                $_SESSION['membership'] = $membership;
                 echo "<script>window.location.replace('index.php');</script>";
               }
               else{
@@ -186,7 +188,7 @@ if(isset($_POST['demo_request'])){
   $call = "CALL ".$seleced_db.".demo_connection('$fullname','$email1','$phone1','$city1')";
   if ($conn1->query($call) === TRUE) {
     try{
-      $mail->setFrom('info@mexil.it', 'test account');
+      $mail->setFrom('asif@mexil.it', 'test account');
       $mail->addAddress($email1);     //Add a recipient
       $mail->isHTML(true);           //Set email format to HTML
       $mail->Subject = 'Demo Request For AraaziPak';

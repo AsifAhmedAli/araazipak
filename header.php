@@ -86,6 +86,14 @@ include("db.php");
                                 <?php                                        
                                     }
                                     ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
                                 <!-- Login Modal -->
                                 <div class="modal fade" id="exampleModal" tabindex="-1"
                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -416,16 +424,8 @@ include("db.php");
                                         </div>
                                     </div>
                                     </div>
+                                    </div>
                                 </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-        </div>
-    </div>
-</div>
 <div id="div11" class="d-none"></div>
 <div class="loading" id="loader1" style="visibility: hidden;">Loading&#8230;</div>
 <script>
@@ -452,7 +452,7 @@ include("db.php");
         $.ajax({
             type: "post",
             data: serializedData,
-            url: "../../controller.php",
+            url: "controller.php",
             success: function (result) {
                 $("#div11").html(result);
                 document.getElementById("demonstration_form").style.display = "none";

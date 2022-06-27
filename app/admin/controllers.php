@@ -7,6 +7,9 @@ $ifcondition = 0;
 $maxsize    = 2097152;
 $errors     = array();
 
+$membership = $_SESSION['membership'];
+
+    // echo "<script>alert('".$membership."')</script>";
 //add new agent
 if(isset($_POST['addagent'])){
     $z = $_POST['addagent'];
@@ -16,60 +19,135 @@ if(isset($_POST['addagent'])){
     $z4 = $_POST['phone'];
     $z5 = $_POST['pass'];
     $z6 = $_POST['cpass'];
-    if($z5 == $z6){
-      $sql = "SELECT email1 FROM users where email1 = '$z3'";
+    if($membership == "basic"){
+      $sql = "SELECT count(email1) as noofagents FROM users where role1 = 'agent'";
       $result = $conn->query($sql);
-      
+
       if ($result->num_rows > 0) {
         // output data of each row
-        echo "<script>
-        Swal.fire(
-            'Oops...',
-            'This email is already registered!',
-            'error'
-          )
-        </script>";
+        $row = $result->fetch_assoc();
+        $noofagents = $row['noofagents'];
+            // echo "<script>alert('".$noofagents."')</script>";
+      }
+      if($noofagents < 1){
+      if($z5 == $z6){
+        $sql = "SELECT email1 FROM users where email1 = '$z3'";
+        $result = $conn->query($sql);
+        
+        if ($result->num_rows > 0) {
+          // output data of each row
+          echo "<script>
+          Swal.fire(
+              'Oops...',
+              'This email is already registered!',
+              'error'
+            )
+          </script>";
+        }
+        else{
+          $sql = "INSERT INTO users (firstname, lastname, email1, pass1, role1, phone, status)
+          VALUES ('$z1', '$z2', '$z3', '$z5','agent','$z4', 'active')";
+          if ($conn->query($sql) === TRUE) {
+            try{
+              $mail->setFrom('asif@mexil.it', 'test account');
+              $mail->addAddress($z3);     //Add a recipient
+              $mail->isHTML(true);                                  //Set email format to HTML
+              $mail->Subject = 'New Agent Registration';
+              require './email_templates/template1.php';
+              $mail->Body    = $new_agent_registration;
+              // $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+          
+              $mail->send();
+              echo "<script>Swal.fire(
+                'Success!',
+                'New Agent has been added and an email has been sent to the Agent!',
+                'success'
+              )</script>";
+            
+          } catch (Exception $e) {
+              echo "Message could not be sent";
+            }
+          }
+       }
       }
       else{
-        $sql = "INSERT INTO users (firstname, lastname, email1, pass1, role1, phone, status)
-        VALUES ('$z1', '$z2', '$z3', '$z5','agent','$z4', 'active')";
-        if ($conn->query($sql) === TRUE) {
-          try{
-            $mail->setFrom('info@mexil.it', 'test account');
-            $mail->addAddress($z3);     //Add a recipient
-            $mail->isHTML(true);                                  //Set email format to HTML
-            $mail->Subject = 'New Agent Registration';
-            require './email_templates/template1.php';
-            $mail->Body    = $new_agent_registration;
-            // $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
-        
-            $mail->send();
-            echo "<script>Swal.fire(
-              'Success!',
-              'New Agent has been added and an email has been sent to the Agent!',
-              'success'
-            )</script>";
-          
-        } catch (Exception $e) {
-            echo "Message could not be sent";
-          }
-        }
+          echo "<script>
+          Swal.fire(
+              'Oops...',
+              'Passwords are not the same!',
+              'error'
+            )
+          </script>";
+      }
+    }
+    else{
+      echo "<script>
+      Swal.fire({
+        icon: 'error',
+        title: 'Buy Now',
+        text: 'Please buy Professional Membership to add more agents!',
+        footer: '<a href=\'../../index.php#askld\'>Buy Now?</a>'
+      })
+      </script>";
     }
   }
     else{
-        echo "<script>
-        Swal.fire(
-            'Oops...',
-            'Passwords are not the same!',
-            'error'
-          )
-        </script>";
+      if($z5 == $z6){
+        $sql = "SELECT email1 FROM users where email1 = '$z3'";
+        $result = $conn->query($sql);
+        
+        if ($result->num_rows > 0) {
+          // output data of each row
+          echo "<script>
+          Swal.fire(
+              'Oops...',
+              'This email is already registered!',
+              'error'
+            )
+          </script>";
+        }
+        else{
+          $sql = "INSERT INTO users (firstname, lastname, email1, pass1, role1, phone, status)
+          VALUES ('$z1', '$z2', '$z3', '$z5','agent','$z4', 'active')";
+          if ($conn->query($sql) === TRUE) {
+            try{
+              $mail->setFrom('asif@mexil.it', 'test account');
+              $mail->addAddress($z3);     //Add a recipient
+              $mail->isHTML(true);                                  //Set email format to HTML
+              $mail->Subject = 'New Agent Registration';
+              require './email_templates/template1.php';
+              $mail->Body    = $new_agent_registration;
+              // $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+          
+              $mail->send();
+              echo "<script>Swal.fire(
+                'Success!',
+                'New Agent has been added and an email has been sent to the Agent!',
+                'success'
+              )</script>";
+            
+          } catch (Exception $e) {
+              echo "Message could not be sent";
+            }
+          }
+       }
+      }
+      else{
+          echo "<script>
+          Swal.fire(
+              'Oops...',
+              'Passwords are not the same!',
+              'error'
+            )
+          </script>";
+      }
     }
+
     // echo "<script>alert('".$z."')</script>";
 }
 
 
-//diable agents
+//disable agents
 if(isset($_POST['x'])){
   $x = $_POST['x'];
   $sql = "SELECT * FROM users where id='$x'";
@@ -84,7 +162,7 @@ if(isset($_POST['x'])){
 
     if ($conn->query($sql) === TRUE) {
       try{
-        $mail->setFrom('info@mexil.it', 'test account');
+        $mail->setFrom('asif@mexil.it', 'test account');
         $mail->addAddress($email);     //Add a recipient
         $mail->isHTML(true);                                  //Set email format to HTML
         $mail->Subject = 'Disable Account';
@@ -122,7 +200,7 @@ if(isset($_POST['x1'])){
 
     if ($conn->query($sql) === TRUE) {
       try{
-        $mail->setFrom('info@mexil.it', 'test account');
+        $mail->setFrom('asif@mexil.it', 'test account');
         $mail->addAddress($email);     //Add a recipient
         $mail->isHTML(true);                                  //Set email format to HTML
         $mail->Subject = 'Activated Account';
@@ -147,53 +225,128 @@ if(isset($_POST['x1'])){
 
 //add new project
 if(isset($_POST['newproject'])){
-  $Type = $_POST['Type'];
-  $Developer = $_POST['Developer'];
-  $Title = $_POST['Title'];
-  $Enquiry_Only_Email = $_POST['Enquiry_Only_Email'];
-  $Websites = $_POST['Websites'];
-  $Name_Sales_Request_Recipient = $_POST['Name_Sales_Request_Recipient'];
-  $phone_Sales_Request_Recipient = $_POST['phone_Sales_Request_Recipient'];
-  $email_Sales_Request_Recipient = $_POST['email_Sales_Request_Recipient'];
-  $Architect = $_POST['Architect'];
-  $Levels = $_POST['Levels'];
-  $Builder = $_POST['Builder'];
-  $Completion_Date = $_POST['Completion_Date'];
-  $Introduction = $_POST['Introduction'];
-  $Features = $_POST['Features'];
-  $Reservation_no = $_POST['Reservation_no'];
-  $Street_Number = $_POST['Street_Number'];
-  $Street_Name = $_POST['Street_Name'];
-  $Suburb = $_POST['Suburb'];
-  $State = $_POST['State'];
-  $Postal_Code = $_POST['Postal_Code'];
-  $Country = $_POST['Country'];
-  $Latitude = $_POST['Latitude'];
-  $Longitude = $_POST['Longitude'];
-  $Retail_Sales_Commission = $_POST['Retail_Sales_Commission'];
-  $Developer_Sales_Commission = $_POST['Developer_Sales_Commission'];
-  $Partner_Sales_Commission = $_POST['Partner_Sales_Commission'];
-  $Offshore_Commission = $_POST['Offshore_Commission'];
-  $Other_Offshore_Commission = $_POST['Other_Offshore_Commission'];
-  $Other_Developer_Sales_Commission = $_POST['Other_Developer_Sales_Commission'];
-  $other_Partner_Sales_Commission = $_POST['other_Partner_Sales_Commission'];
-  $Currency = $_POST['Currency'];
+  if($membership == 'basic'){
+    $sql = "SELECT count(Title) as noofagents FROM projects";
+    $result = $conn->query($sql);
 
-  $sql12 = "INSERT INTO projects (Type1, Developer, Title, Enquiry_Only_Email, Websites, Name_Sales_Request_Recipient, phone_Sales_Request_Recipient, email_Sales_Request_Recipient, Architect, Levels, Builder, Expected_Completion_Date, Introduction, Features, Reservation_no, Street_Number, Street_Name, Suburb, State1, Postal_Code, Country, Latitude, Longitude, Retail_Sales_Commission_percentage, Developer_Sales_Commission_percentage, Partner_Sales_Commission_percentage, Offshore_Commission_percentage, other_Offshore_Commission_percentage, other_Developer_Sales_Commission_percentage, other_Partner_Sales_Commission_percentage, Currency, status1)
-  VALUES ('$Type', '$Developer', '$Title','$Enquiry_Only_Email','$Websites','$Name_Sales_Request_Recipient','$phone_Sales_Request_Recipient','$email_Sales_Request_Recipient','$Architect','$Levels','$Builder','$Completion_Date','$Introduction','$Features','$Reservation_no','$Street_Number','$Street_Name','$Suburb','$State','$Postal_Code','$Country','$Latitude','$Longitude','$Retail_Sales_Commission','$Developer_Sales_Commission','$Partner_Sales_Commission','$Offshore_Commission','$Other_Offshore_Commission','$Other_Developer_Sales_Commission','$other_Partner_Sales_Commission','$Currency', 'active')";
+    if ($result->num_rows > 0) {
+      // output data of each row
+      $row = $result->fetch_assoc();
+      $noofprojects = $row['noofagents'];
+          // echo "<script>alert('".$noofagents."')</script>";
+    }
+    if($noofprojects < 3){
 
-  if ($conn->query($sql12) === TRUE) {
-    echo "<script>Swal.fire({
-      icon: 'success',
-      title: 'Done...',
-      text: 'New Project has been added!',
-      allowOutsideClick: false
-    })
-    $( 'button.swal2-confirm' ).click(function() {
-      window.location.replace('./new-project.php');
-    });
-    </script>";
+      $Type = $_POST['Type'];
+      $Developer = $_POST['Developer'];
+      $Title = $_POST['Title'];
+      $Enquiry_Only_Email = $_POST['Enquiry_Only_Email'];
+      $Websites = $_POST['Websites'];
+      $Name_Sales_Request_Recipient = $_POST['Name_Sales_Request_Recipient'];
+      $phone_Sales_Request_Recipient = $_POST['phone_Sales_Request_Recipient'];
+      $email_Sales_Request_Recipient = $_POST['email_Sales_Request_Recipient'];
+      $Architect = $_POST['Architect'];
+      $Levels = $_POST['Levels'];
+      $Builder = $_POST['Builder'];
+      $Completion_Date = $_POST['Completion_Date'];
+      $Introduction = $_POST['Introduction'];
+      $Features = $_POST['Features'];
+      $Reservation_no = $_POST['Reservation_no'];
+      $Street_Number = $_POST['Street_Number'];
+      $Street_Name = $_POST['Street_Name'];
+      $Suburb = $_POST['Suburb'];
+      $State = $_POST['State'];
+      $Postal_Code = $_POST['Postal_Code'];
+      $Country = $_POST['Country'];
+      $Latitude = $_POST['Latitude'];
+      $Longitude = $_POST['Longitude'];
+      $Retail_Sales_Commission = $_POST['Retail_Sales_Commission'];
+      $Developer_Sales_Commission = $_POST['Developer_Sales_Commission'];
+      $Partner_Sales_Commission = $_POST['Partner_Sales_Commission'];
+      $Offshore_Commission = $_POST['Offshore_Commission'];
+      $Other_Offshore_Commission = $_POST['Other_Offshore_Commission'];
+      $Other_Developer_Sales_Commission = $_POST['Other_Developer_Sales_Commission'];
+      $other_Partner_Sales_Commission = $_POST['other_Partner_Sales_Commission'];
+      $Currency = $_POST['Currency'];
+    
+      $sql12 = "INSERT INTO projects (Type1, Developer, Title, Enquiry_Only_Email, Websites, Name_Sales_Request_Recipient, phone_Sales_Request_Recipient, email_Sales_Request_Recipient, Architect, Levels, Builder, Expected_Completion_Date, Introduction, Features, Reservation_no, Street_Number, Street_Name, Suburb, State1, Postal_Code, Country, Latitude, Longitude, Retail_Sales_Commission_percentage, Developer_Sales_Commission_percentage, Partner_Sales_Commission_percentage, Offshore_Commission_percentage, other_Offshore_Commission_percentage, other_Developer_Sales_Commission_percentage, other_Partner_Sales_Commission_percentage, Currency, status1)
+      VALUES ('$Type', '$Developer', '$Title','$Enquiry_Only_Email','$Websites','$Name_Sales_Request_Recipient','$phone_Sales_Request_Recipient','$email_Sales_Request_Recipient','$Architect','$Levels','$Builder','$Completion_Date','$Introduction','$Features','$Reservation_no','$Street_Number','$Street_Name','$Suburb','$State','$Postal_Code','$Country','$Latitude','$Longitude','$Retail_Sales_Commission','$Developer_Sales_Commission','$Partner_Sales_Commission','$Offshore_Commission','$Other_Offshore_Commission','$Other_Developer_Sales_Commission','$other_Partner_Sales_Commission','$Currency', 'active')";
+    
+      if ($conn->query($sql12) === TRUE) {
+        echo "<script>Swal.fire({
+          icon: 'success',
+          title: 'Done...',
+          text: 'New Project has been added!',
+          allowOutsideClick: false
+        })
+        $( 'button.swal2-confirm' ).click(function() {
+          window.location.replace('./new-project.php');
+        });
+        </script>";
+      }
+    }
+    else{
+      echo "<script>
+      Swal.fire({
+        icon: 'error',
+        title: 'Buy Now',
+        text: 'Please buy Professional Membership to add more projects!',
+        footer: '<a href=\'../../index.php#askld\'>Buy Now?</a>'
+      })
+      </script>";
+
+    }
   }
+  else{
+    $Type = $_POST['Type'];
+    $Developer = $_POST['Developer'];
+    $Title = $_POST['Title'];
+    $Enquiry_Only_Email = $_POST['Enquiry_Only_Email'];
+    $Websites = $_POST['Websites'];
+    $Name_Sales_Request_Recipient = $_POST['Name_Sales_Request_Recipient'];
+    $phone_Sales_Request_Recipient = $_POST['phone_Sales_Request_Recipient'];
+    $email_Sales_Request_Recipient = $_POST['email_Sales_Request_Recipient'];
+    $Architect = $_POST['Architect'];
+    $Levels = $_POST['Levels'];
+    $Builder = $_POST['Builder'];
+    $Completion_Date = $_POST['Completion_Date'];
+    $Introduction = $_POST['Introduction'];
+    $Features = $_POST['Features'];
+    $Reservation_no = $_POST['Reservation_no'];
+    $Street_Number = $_POST['Street_Number'];
+    $Street_Name = $_POST['Street_Name'];
+    $Suburb = $_POST['Suburb'];
+    $State = $_POST['State'];
+    $Postal_Code = $_POST['Postal_Code'];
+    $Country = $_POST['Country'];
+    $Latitude = $_POST['Latitude'];
+    $Longitude = $_POST['Longitude'];
+    $Retail_Sales_Commission = $_POST['Retail_Sales_Commission'];
+    $Developer_Sales_Commission = $_POST['Developer_Sales_Commission'];
+    $Partner_Sales_Commission = $_POST['Partner_Sales_Commission'];
+    $Offshore_Commission = $_POST['Offshore_Commission'];
+    $Other_Offshore_Commission = $_POST['Other_Offshore_Commission'];
+    $Other_Developer_Sales_Commission = $_POST['Other_Developer_Sales_Commission'];
+    $other_Partner_Sales_Commission = $_POST['other_Partner_Sales_Commission'];
+    $Currency = $_POST['Currency'];
+
+    $sql12 = "INSERT INTO projects (Type1, Developer, Title, Enquiry_Only_Email, Websites, Name_Sales_Request_Recipient, phone_Sales_Request_Recipient, email_Sales_Request_Recipient, Architect, Levels, Builder, Expected_Completion_Date, Introduction, Features, Reservation_no, Street_Number, Street_Name, Suburb, State1, Postal_Code, Country, Latitude, Longitude, Retail_Sales_Commission_percentage, Developer_Sales_Commission_percentage, Partner_Sales_Commission_percentage, Offshore_Commission_percentage, other_Offshore_Commission_percentage, other_Developer_Sales_Commission_percentage, other_Partner_Sales_Commission_percentage, Currency, status1)
+    VALUES ('$Type', '$Developer', '$Title','$Enquiry_Only_Email','$Websites','$Name_Sales_Request_Recipient','$phone_Sales_Request_Recipient','$email_Sales_Request_Recipient','$Architect','$Levels','$Builder','$Completion_Date','$Introduction','$Features','$Reservation_no','$Street_Number','$Street_Name','$Suburb','$State','$Postal_Code','$Country','$Latitude','$Longitude','$Retail_Sales_Commission','$Developer_Sales_Commission','$Partner_Sales_Commission','$Offshore_Commission','$Other_Offshore_Commission','$Other_Developer_Sales_Commission','$other_Partner_Sales_Commission','$Currency', 'active')";
+
+    if ($conn->query($sql12) === TRUE) {
+      echo "<script>Swal.fire({
+        icon: 'success',
+        title: 'Done...',
+        text: 'New Project has been added!',
+        allowOutsideClick: false
+      })
+      $( 'button.swal2-confirm' ).click(function() {
+        window.location.replace('./new-project.php');
+      });
+      </script>";
+    }
+  }
+  
   
   // else{
   //   echo "<script>alert('asdfasd');</script>";
@@ -735,38 +888,106 @@ if(isset($_POST["mynaawe"])){
 //add new property
 if(isset($_POST['addnewproperty'])){
   $project_id = $_POST['addnewproperty'];
-
-  $propertyidbyadmin = $_POST['propertyidbyadmin'];
-  $price = $_POST['price'];
-  $beds = $_POST['beds'];
-  $baths = $_POST['baths'];
-  $cars = $_POST['cars'];
-  $car_lots = $_POST['car_lots'];
-  $storage_lots = $_POST['storage_lots'];
-  $level1 = $_POST['level1'];
-  $aspect = $_POST['aspect'];
-  $total_area = $_POST['total_area'];
-  $internal_area = $_POST['internal_area'];
-  $external_area = $_POST['external_area'];
-  $status1 = $_POST['status1'];
+  if($membership == 'basic'){
+    $sql = "SELECT count(idbyadmin) as noofagents FROM properties where project_id = '$project_id'";
+    $result = $conn->query($sql);
   
-  $sql = "INSERT INTO properties (project_id, idbyadmin, price, Beds,Baths,Cars,Car_lots,Storage_lots,level1,aspect,totalarea,internalarea,externalarea,status1)
-  VALUES ('$project_id', '$propertyidbyadmin', '$price', '$beds', '$baths', '$cars', '$car_lots', '$storage_lots', '$level1', '$aspect', '$total_area', '$internal_area', '$external_area', '$status1')";
+    if ($result->num_rows > 0) {
+      // output data of each row
+      $row = $result->fetch_assoc();
+      $noofproperties = $row['noofagents'];
+          // echo "<script>alert('".$noofagents."')</script>";
+    }
+    $sql = "SELECT count(idbyadmin) as noofagents1 FROM properties_archived where project_id = '$project_id'";
+    $result = $conn->query($sql);
   
-  if ($conn->query($sql) === TRUE) {
-    echo "<script>
-    Swal.fire({
-      icon: 'success',
-      title: 'Done...',
-      text: 'New Property has been added successfully!',
-      allowOutsideClick: false
-    })
-    $( 'button.swal2-confirm' ).click(function() {
-      location.reload();
-    });
-    </script>";
+    if ($result->num_rows > 0) {
+      // output data of each row
+      $row = $result->fetch_assoc();
+      $noofproperties1 = $row['noofagents1'];
+          // echo "<script>alert('".$noofagents."')</script>";
+    }
+    $noofproperties1 = $noofproperties1 + $noofproperties;
+    if($noofproperties1 < 3){
 
+      $propertyidbyadmin = $_POST['propertyidbyadmin'];
+      $price = $_POST['price'];
+      $beds = $_POST['beds'];
+      $baths = $_POST['baths'];
+      $cars = $_POST['cars'];
+      $car_lots = $_POST['car_lots'];
+      $storage_lots = $_POST['storage_lots'];
+      $level1 = $_POST['level1'];
+      $aspect = $_POST['aspect'];
+      $total_area = $_POST['total_area'];
+      $internal_area = $_POST['internal_area'];
+      $external_area = $_POST['external_area'];
+      $status1 = $_POST['status1'];
+      
+      $sql = "INSERT INTO properties (project_id, idbyadmin, price, Beds,Baths,Cars,Car_lots,Storage_lots,level1,aspect,totalarea,internalarea,externalarea,status1)
+      VALUES ('$project_id', '$propertyidbyadmin', '$price', '$beds', '$baths', '$cars', '$car_lots', '$storage_lots', '$level1', '$aspect', '$total_area', '$internal_area', '$external_area', '$status1')";
+      
+      if ($conn->query($sql) === TRUE) {
+        echo "<script>
+        Swal.fire({
+          icon: 'success',
+          title: 'Done...',
+          text: 'New Property has been added successfully!',
+          allowOutsideClick: false
+        })
+        $( 'button.swal2-confirm' ).click(function() {
+          location.reload();
+        });
+        </script>";
+    
+      }
+    }
+    else{
+      echo "<script>
+      Swal.fire({
+        icon: 'error',
+        title: 'Buy Now',
+        text: 'Please buy Professional Membership to add more properties!',
+        footer: '<a href=\'../../index.php#askld\'>Buy Now?</a>'
+      })
+      </script>";
+
+    }
   }
+  else{
+    $propertyidbyadmin = $_POST['propertyidbyadmin'];
+    $price = $_POST['price'];
+    $beds = $_POST['beds'];
+    $baths = $_POST['baths'];
+    $cars = $_POST['cars'];
+    $car_lots = $_POST['car_lots'];
+    $storage_lots = $_POST['storage_lots'];
+    $level1 = $_POST['level1'];
+    $aspect = $_POST['aspect'];
+    $total_area = $_POST['total_area'];
+    $internal_area = $_POST['internal_area'];
+    $external_area = $_POST['external_area'];
+    $status1 = $_POST['status1'];
+    
+    $sql = "INSERT INTO properties (project_id, idbyadmin, price, Beds,Baths,Cars,Car_lots,Storage_lots,level1,aspect,totalarea,internalarea,externalarea,status1)
+    VALUES ('$project_id', '$propertyidbyadmin', '$price', '$beds', '$baths', '$cars', '$car_lots', '$storage_lots', '$level1', '$aspect', '$total_area', '$internal_area', '$external_area', '$status1')";
+    
+    if ($conn->query($sql) === TRUE) {
+      echo "<script>
+      Swal.fire({
+        icon: 'success',
+        title: 'Done...',
+        text: 'New Property has been added successfully!',
+        allowOutsideClick: false
+      })
+      $( 'button.swal2-confirm' ).click(function() {
+        location.reload();
+      });
+      </script>";
+  
+    }
+  }
+
 
   // echo "<script>alert('".$project_id."')</script>";
 }
@@ -806,27 +1027,83 @@ if(isset($_POST['x6'])){
 //recover property
 if(isset($_POST['x7'])){
   $x7 = $_POST['x7'];
-  // echo "<script>alert('asdasd')</script>";
-  $sql = "INSERT INTO properties (id, project_id, idbyadmin, price, Beds,Baths,Cars,Car_lots,Storage_lots,level1,aspect,totalarea,internalarea,externalarea,status1)
-  SELECT id, project_id, idbyadmin, price, Beds,Baths,Cars,Car_lots,Storage_lots,level1,aspect,totalarea,internalarea,externalarea,status1 FROM properties_archived where id = '$x7'";
-
-  if ($conn->query($sql) === TRUE) {
-    $sql = "DELETE FROM properties_archived WHERE id='$x7'";
-
-    if ($conn->query($sql) === TRUE) {
+  if($membership == 'basic'){
+    $sql = "SELECT count(idbyadmin) as noofagents FROM properties where project_id = '$project_id'";
+    $result = $conn->query($sql);
+  
+    if ($result->num_rows > 0) {
+      // output data of each row
+      $row = $result->fetch_assoc();
+      $noofproperties = $row['noofagents'];
+          // echo "<script>alert('".$noofagents."')</script>";
+    }
+    $sql = "SELECT count(idbyadmin) as noofagents1 FROM properties_archived where project_id = '$project_id'";
+    $result = $conn->query($sql);
+  
+    if ($result->num_rows > 0) {
+      // output data of each row
+      $row = $result->fetch_assoc();
+      $noofproperties1 = $row['noofagents1'];
+          // echo "<script>alert('".$noofagents."')</script>";
+    }
+    $noofproperties1 = $noofproperties1 + $noofproperties;
+    if($noofproperties1 < 3){
+      $sql = "INSERT INTO properties (id, project_id, idbyadmin, price, Beds,Baths,Cars,Car_lots,Storage_lots,level1,aspect,totalarea,internalarea,externalarea,status1)
+      SELECT id, project_id, idbyadmin, price, Beds,Baths,Cars,Car_lots,Storage_lots,level1,aspect,totalarea,internalarea,externalarea,status1 FROM properties_archived where id = '$x7'";
+    
+      if ($conn->query($sql) === TRUE) {
+        $sql = "DELETE FROM properties_archived WHERE id='$x7'";
+    
+        if ($conn->query($sql) === TRUE) {
+          echo "<script>
+          Swal.fire({
+            icon: 'success',
+            title: 'Done...',
+            text: 'Property has been recovered successfully!',
+            allowOutsideClick: false
+          })
+          $( 'button.swal2-confirm' ).click(function() {
+            location.reload();
+          });
+          </script>";
+        }
+      }
+    }
+    else{
       echo "<script>
       Swal.fire({
-        icon: 'success',
-        title: 'Done...',
-        text: 'Property has been recovered successfully!',
-        allowOutsideClick: false
+        icon: 'error',
+        title: 'Buy Now',
+        text: 'Please buy Professional Membership to add more agents!',
+        footer: '<a href=\'../../index.php#askld\'>Buy Now?</a>'
       })
-      $( 'button.swal2-confirm' ).click(function() {
-        location.reload();
-      });
       </script>";
     }
   }
+  else{
+    $sql = "INSERT INTO properties (id, project_id, idbyadmin, price, Beds,Baths,Cars,Car_lots,Storage_lots,level1,aspect,totalarea,internalarea,externalarea,status1)
+    SELECT id, project_id, idbyadmin, price, Beds,Baths,Cars,Car_lots,Storage_lots,level1,aspect,totalarea,internalarea,externalarea,status1 FROM properties_archived where id = '$x7'";
+  
+    if ($conn->query($sql) === TRUE) {
+      $sql = "DELETE FROM properties_archived WHERE id='$x7'";
+  
+      if ($conn->query($sql) === TRUE) {
+        echo "<script>
+        Swal.fire({
+          icon: 'success',
+          title: 'Done...',
+          text: 'Property has been recovered successfully!',
+          allowOutsideClick: false
+        })
+        $( 'button.swal2-confirm' ).click(function() {
+          location.reload();
+        });
+        </script>";
+      }
+    }
+  }
+  // echo "<script>alert('asdasd')</script>";
+
   // if (!$conn -> query($sql)) {
   //   echo("Error description: " . $conn -> error);
   // }

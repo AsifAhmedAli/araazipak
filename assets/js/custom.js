@@ -86,7 +86,7 @@ $("#agent_login").submit(function (event) {
         $.ajax({
             type: "post",
             data: serializedData,
-            url: "../../app/logincall.php",
+            url: "app/logincall.php",
             success: function (result) {
                 $("#div11").html(result);
                 document.getElementById("loader1").style.visibility = "hidden";

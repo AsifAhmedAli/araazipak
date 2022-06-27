@@ -189,7 +189,8 @@ $sql = "CREATE TABLE $db_name.property_sold_by (
   id int(11) NOT NULL,
   sold_by varchar(100) NOT NULL,
   property_id int(5) NOT NULL,
-  timeanddate timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  timeanddate timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  buyer_name text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 $conn1->query($sql);
 

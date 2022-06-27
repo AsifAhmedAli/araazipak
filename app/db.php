@@ -2,7 +2,7 @@
 
 $servername = "localhost";
 $username = "root";
-$password = "jaan3038611";
+$password = "";
 if($dbname != "" or $dbname != null){
 
 }

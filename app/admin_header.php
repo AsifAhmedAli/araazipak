@@ -48,7 +48,7 @@ if($statusas == 'inactive'){
   <body>
     <header>
       <a href="./index.php" class="brand-icon">
-        <img src="../../img/3.png" alt="" />
+        <img src="../img/3.png" alt="" />
       </a>
       <div class="d-flex justify-content-between align-items-center">
         <div class="toggle-menu">
@@ -57,7 +57,7 @@ if($statusas == 'inactive'){
           </button>
           <a href="./index.php" class="toggle-brand-icon">
             <img
-              src="../../img/3.png"
+              src="../img/3.png"
               width="220px"
               class="img-fluid"
               alt=""

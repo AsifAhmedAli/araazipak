@@ -93,9 +93,8 @@ include("db.php");
             </nav>
         </div>
     </div>
-</div>
-                                <!-- Login Modal -->
-                                <div class="modal fade" id="exampleModal" tabindex="-1"
+                                    <!-- Login Modal -->
+                                    <div class="modal fade" id="exampleModal" tabindex="-1"
                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
@@ -426,6 +425,8 @@ include("db.php");
                                     </div>
                                     </div>
                                 </div>
+</div>
+
 <div id="div11" class="d-none"></div>
 <div class="loading" id="loader1" style="visibility: hidden;">Loading&#8230;</div>
 <script>

@@ -1,3 +1,4 @@
 photo_gallery/
 uploads/
 db.php
+email_templates/email_settings.php

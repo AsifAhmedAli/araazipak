@@ -2,3 +2,5 @@ photo_gallery/
 uploads/
 db.php
 email_templates/email_settings.php
+photo_gallery/.DS_Store
+uploads/.DS_Store

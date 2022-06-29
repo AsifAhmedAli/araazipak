@@ -497,7 +497,6 @@ var smallest = sorted[0],
     ></script>
 
     <script src="./assets/js/script.js"></script>
-<<<<<<< HEAD
     <script>
       $( document ).ready(function() {
         var charterror = document.getElementById("google-visualization-errors-all-1");
@@ -514,8 +513,5 @@ var smallest = sorted[0],
       }
       });
     </script>
-
-=======
->>>>>>> e0de672d796c331b870ce90fe8f00d1956961781
   </body>
 </html>

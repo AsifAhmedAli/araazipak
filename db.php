@@ -1,11 +1,7 @@
 <?php
 $servername = "localhost";
 $username = "root";
-<<<<<<< HEAD
 $password = "jaan3038611";
-=======
-$password = "";
->>>>>>> e0de672d796c331b870ce90fe8f00d1956961781
 $db_name = 'araazipak';
 
 // Create connection

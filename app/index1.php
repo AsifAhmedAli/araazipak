@@ -482,5 +482,22 @@ if ($result523->num_rows > 0) {
     ></script>
 
     <script src="./assets/js/script.js"></script>
+    <script>
+      $( document ).ready(function() {
+      var charterror = document.getElementById("google-visualization-errors-all-1");
+      if(charterror){
+        charterror.style.display = "none";
+      }
+      var charterror1 = document.getElementById("google-visualization-errors-all-3");
+      if(charterror1){
+        charterror1.style.display = "none";
+      }
+      var charterror3 = document.getElementById("google-visualization-errors-all-5");
+      if(charterror3){
+        charterror3.style.display = "none";
+      }
+      });
+    </script>
+
   </body>
 </html>

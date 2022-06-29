@@ -16,7 +16,11 @@ $mail = new PHPMailer(true);
     $mail->Host       = 'smtp.hostinger.com';                     //Set the SMTP server to send through
     $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
     $mail->Username   = 'asif@mexil.it';                     //SMTP username
+<<<<<<< HEAD
     $mail->Password   = 'Jaan3038611';                               //SMTP password
+=======
+    $mail->Password   = 'Jaan3038611@';                               //SMTP password
+>>>>>>> e0de672d796c331b870ce90fe8f00d1956961781
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
     $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 ?>

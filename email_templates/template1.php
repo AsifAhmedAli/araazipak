@@ -1,7 +1,11 @@
 
 
 <?php  
+<<<<<<< HEAD
 $url = 'http://3.139.194.191/';
+=======
+$url = 'http://localhost/product/';
+>>>>>>> e0de672d796c331b870ce90fe8f00d1956961781
     //new agent email
     $new_agent_registration = '
         <body style="background-color: #eeeeee;">
